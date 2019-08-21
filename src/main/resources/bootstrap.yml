@@ -1,0 +1,19 @@
+spring:
+  profiles:
+    active: ${RUNTIME_ENV:dev}
+  application:
+    name: springboot-sample-app
+  cloud:
+    config:
+      uri: http://localhost:8888
+logging:
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss} %-5level %logger - %msg%n'
+  level:
+    com: DEBUG
+#server:
+#  ssl:
+#    key-store: ./certs/wildcard-cert.p12
+#    key-store-type: PKCS12
+#    key-store-password: wildcard
+#  port: 8443

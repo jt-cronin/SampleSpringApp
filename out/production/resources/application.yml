@@ -1,0 +1,21 @@
+spring:
+  profiles:
+    active: ${RUNTIME_ENV:dev}
+logging:
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss} %-5level %logger - %msg%n'
+  level:
+    com: DEBUG
+
+---
+spring:
+  profiles: 'dev'
+  datasource:
+    username: sa
+    password:
+    driver_class_name: org.h2.Driver
+    url: jdbc:h2:mem:comics;MODE=MSSQLServer;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1
+    continue-on-error: false
+  jpa:
+    hibernate:
+      ddl-auto:

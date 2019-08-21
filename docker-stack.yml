@@ -1,0 +1,45 @@
+version: '3.7'
+services:
+  dockerSampleAppJT:
+    image: ${IMAGE_REGISTRY}/com.mutualofomaha.vcs/springboot-sample-app:${IMAGE_TAG}
+    environment:
+      RUNTIME_ENV:
+    networks:
+      - vcs-ingress${_RUNTIME_ENV}
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        limits:
+          cpus: '3'
+          memory: 1024M
+        reservations:
+          cpus: '0.50'
+          memory: 256M
+      labels:
+        - com.docker.ucp.access.label=/${RUNTIME_ENV}/vcs
+        - com.docker.lb.network=vcs-ingress${_RUNTIME_ENV}
+        - com.docker.lb.service_cluster=${RUNTIME_ENV}
+        - com.docker.lb.hosts=springboot-sample-app${_RUNTIME_ENV}.mutualofomaha.com
+        - com.docker.lb.port=8080
+        - com.docker.lb.ssl_cert=moo_wildcard.cert
+        - com.docker.lb.ssl_key=moo_wildcard.key
+        - com.docker.lb.redirects=http://springboot-sample-app${_RUNTIME_ENV}.mutualofomaha.com, https://springboot-sample-app${_RUNTIME_ENV}.mutualofomaha.com
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      update_config:
+        failure_action: pause
+        parallelism: 1
+        delay: 10s
+        order: stop-first   # v 3.4 or higher
+networks:
+  vcs-ingress${_RUNTIME_ENV}:
+    external: true
+secrets:
+  moo_wildcard.cert:
+    external: true
+  moo_wildcard.key:
+    external: true
